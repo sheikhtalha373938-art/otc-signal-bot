@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OTC Signal Bot</title>
+<style>
+body {
+background:#101827;
+color:white;
+font-family:Arial,sans-serif;
+text-align:center;
+padding:15px;
+}
+h2{color:#55d6a5}
+video{
+width:100%;
+max-width:600px;
+border:2px solid #55d6a5;
+border-radius:12px;
+}
+button{
+padding:13px;
+margin:7px;
+border:0;
+border-radius:8px;
+background:#20a477;
+color:white;
+font-size:16px;
+}
+#status{color:#ffd166;margin:15px}
+#photo{
+width:100%;
+max-width:600px;
+border-radius:10px;
+}
+</style>
+</head>
+<body>
+
+<h2>OTC Signal Bot</h2>
+<p>Camera Chart Reader - Demo Version</p>
+
+<video id="video" autoplay playsinline></video>
+<br>
+
+<button onclick="startCamera()">Start Camera</button>
+<button onclick="capture()">Capture Chart</button>
+
+<p id="status">ابھی شروع نہیں ہوا</p>
+
+<canvas id="canvas" style="display:none"></canvas>
+<img id="photo" alt="Captured chart">
+
+<p>Signal: WAIT</p>
+<p>یہ ابتدائی ورژن صرف تصویر لیتا ہے، سگنل کا تجزیہ ابھی شامل نہیں۔</p>
+
+<script>
+const video=document.getElementById('video');
+const statusText=document.getElementById('status');
+
+async function startCamera(){
+try{
+const stream=await navigator.mediaDevices.getUserMedia({
+video:{facingMode:{ideal:"environment"}},
+audio:false
+});
+video.srcObject=stream;
+statusText.textContent="Camera چل رہا ہے";
+}catch(e){
+statusText.textContent="Camera نہیں چل سکا: "+e.message;
+}
+}
+
+function capture(){
+if(!video.videoWidth){
+statusText.textContent="پہلے Start Camera دبائیں";
+return;
+}
+
+const canvas=document.getElementById('canvas');
+canvas.width=video.videoWidth;
+canvas.height=video.videoHeight;
+
+canvas.getContext('2d').drawImage(video,0,0);
+
+document.getElementById('photo').src=
+canvas.toDataURL('image/png');
+
+statusText.textContent="Chart کی تصویر لے لی گئی";
+}
+</script>
+
+</body>
+</html>
