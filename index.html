@@ -1,95 +1,143 @@
 
+HTML
+
 <!DOCTYPE html>
 <html lang="ur">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OTC Signal Bot</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OTC Signal Board</title>
+
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
-background:#101827;
-color:white;
-font-family:Arial,sans-serif;
-text-align:center;
-padding:15px;
+  background: #0b1220;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 15px;
 }
-h2{color:#55d6a5}
-video{
-width:100%;
-max-width:600px;
-border:2px solid #55d6a5;
-border-radius:12px;
+
+.board {
+  max-width: 450px;
+  margin: 20px auto;
+  background: #172338;
+  padding: 22px;
+  border-radius: 18px;
+  border: 1px solid #334155;
 }
-button{
-padding:13px;
-margin:7px;
-border:0;
-border-radius:8px;
-background:#20a477;
-color:white;
-font-size:16px;
+
+h1 {
+  color: #00e5ff;
 }
-#status{color:#ffd166;margin:15px}
-#photo{
-width:100%;
-max-width:600px;
-border-radius:10px;
+
+select, button {
+  width: 90%;
+  padding: 14px;
+  margin: 9px;
+  border: none;
+  border-radius: 9px;
+  font-size: 17px;
+}
+
+select {
+  background: #334155;
+  color: white;
+}
+
+.signal {
+  font-size: 42px;
+  font-weight: bold;
+  margin: 25px;
+  color: #facc15;
+}
+
+.generate {
+  background: #0891b2;
+  color: white;
+}
+
+.ok {
+  background: #16a34a;
+  color: white;
+}
+
+.status {
+  color: #94a3b8;
+  font-size: 13px;
+  line-height: 1.6;
 }
 </style>
 </head>
+
 <body>
 
-<h2>OTC Signal Bot</h2>
-<p>Camera Chart Reader - Demo Version</p>
+<div class="board">
 
-<video id="video" autoplay playsinline></video>
-<br>
+<h1>OTC SIGNAL BOT</h1>
+<h3>1 MINUTE TIMEFRAME</h3>
 
-<button onclick="startCamera()">Start Camera</button>
-<button onclick="capture()">Capture Chart</button>
+<select id="pair">
+  <option>EUR/USD OTC</option>
+  <option>GBP/USD OTC</option>
+  <option>USD/JPY OTC</option>
+  <option>AUD/USD OTC</option>
+  <option>USD/CHF OTC</option>
+  <option>EUR/GBP OTC</option>
+</select>
 
-<p id="status">ابھی شروع نہیں ہوا</p>
+<div class="signal" id="signal">WAIT</div>
 
-<canvas id="canvas" style="display:none"></canvas>
-<img id="photo" alt="Captured chart">
+<p id="timer">Ready</p>
 
-<p>Signal: WAIT</p>
-<p>یہ ابتدائی ورژن صرف تصویر لیتا ہے، سگنل کا تجزیہ ابھی شامل نہیں۔</p>
+<button class="generate" onclick="generateSignal()">
+GET SIGNAL
+</button>
+
+<button class="ok" onclick="confirmSignal()">
+OK
+</button>
+
+<p class="status" id="status">
+DEMO MODE<br>
+No live market data connected
+</p>
+
+</div>
 
 <script>
-const video=document.getElementById('video');
-const statusText=document.getElementById('status');
 
-async function startCamera(){
-try{
-const stream=await navigator.mediaDevices.getUserMedia({
-video:{facingMode:{ideal:"environment"}},
-audio:false
-});
-video.srcObject=stream;
-statusText.textContent="Camera چل رہا ہے";
-}catch(e){
-statusText.textContent="Camera نہیں چل سکا: "+e.message;
+let currentSignal = "WAIT";
+
+function generateSignal() {
+
+  currentSignal = "WAIT";
+
+  document.getElementById("signal").innerText =
+    currentSignal;
+
+  document.getElementById("signal").style.color =
+    "#facc15";
+
+  document.getElementById("timer").innerText =
+    "Signal calculation unavailable";
+
+  document.getElementById("status").innerText =
+    "Demo mode: Live OTC data is not connected.";
+
 }
+
+function confirmSignal() {
+
+  document.getElementById("status").innerText =
+    "Confirmed: " + currentSignal +
+    " | Demo Mode";
+
 }
 
-function capture(){
-if(!video.videoWidth){
-statusText.textContent="پہلے Start Camera دبائیں";
-return;
-}
-
-const canvas=document.getElementById('canvas');
-canvas.width=video.videoWidth;
-canvas.height=video.videoHeight;
-
-canvas.getContext('2d').drawImage(video,0,0);
-
-document.getElementById('photo').src=
-canvas.toDataURL('image/png');
-
-statusText.textContent="Chart کی تصویر لے لی گئی";
-}
 </script>
 
 </body>
